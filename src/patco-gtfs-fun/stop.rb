@@ -1,0 +1,3 @@
+class Stop < FieldDefinition
+
+end
