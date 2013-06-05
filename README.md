@@ -1,3 +1,8 @@
+# patco-gtfs-fun
+This project was created for my [INFO 480](http://seangoggins.net/info480) course.
+
+Its goal is to put together valid [GTFS](http://en.wikipedia.org/wiki/General_Transit_Feed_Specification) files using publicly available data for the [PATCO High-speed Line](http://en.wikipedia.org/wiki/PATCO_Speedline).
+
 # Output Files
 
 ## Required
