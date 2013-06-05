@@ -3,6 +3,8 @@ This project was created for my [INFO 480](http://seangoggins.net/info480) cours
 
 Its goal is to put together valid [GTFS](http://en.wikipedia.org/wiki/General_Transit_Feed_Specification) files using publicly available data for the [PATCO High-speed Line](http://en.wikipedia.org/wiki/PATCO_Speedline). While this data is already in use by Google Maps at least partially (PATCO trains can be seen in the Transit view of Maps), it's cool to learn about the underlying data formats.
 
+### WARNING: This information in this data set should not be assumed to be accurate, up-to-date, or trustworthy. I'm doing this as a one-off project for a class.
+
 # Output Files
 
 ## Required
