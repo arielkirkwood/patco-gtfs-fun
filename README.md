@@ -1,7 +1,7 @@
 # patco-gtfs-fun
 This project was created for my [INFO 480](http://seangoggins.net/info480) course.
 
-Its goal is to put together valid [GTFS](http://en.wikipedia.org/wiki/General_Transit_Feed_Specification) files using publicly available data for the [PATCO High-speed Line](http://en.wikipedia.org/wiki/PATCO_Speedline).
+Its goal is to put together valid [GTFS](http://en.wikipedia.org/wiki/General_Transit_Feed_Specification) files using publicly available data for the [PATCO High-speed Line](http://en.wikipedia.org/wiki/PATCO_Speedline). While this data is already in use by Google Maps at least partially (PATCO trains can be seen in the Transit view of Maps), it's cool to learn about the underlying data formats.
 
 # Output Files
 
