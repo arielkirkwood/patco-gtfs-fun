@@ -1,3 +1,3 @@
-class Trip < FieldDefinition
+class Trip < CSV::Row
 
 end

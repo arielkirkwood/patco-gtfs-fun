@@ -1,3 +1,3 @@
-class Stop < FieldDefinition
+class Stop < CSV::Row
 
 end

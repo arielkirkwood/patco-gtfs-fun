@@ -1,3 +1,3 @@
-class Calendar < FieldDefinition
+class Calendar < CSV::Row
   
 end

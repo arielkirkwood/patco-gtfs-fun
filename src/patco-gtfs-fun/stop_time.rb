@@ -1,3 +1,3 @@
-class StopTime < FieldDefinition
+class StopTime < CSV::Row
 
 end

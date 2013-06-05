@@ -1,3 +1,3 @@
-class Route < FieldDefinition
+class Route < CSV::Row
 
 end
