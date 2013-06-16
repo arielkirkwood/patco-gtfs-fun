@@ -19,7 +19,14 @@ end
 # Feed our PDF text into an array, delimiting each item any time we 
 # run into newline characters, whether actual new lines or instances of "\n"
 # found in the document.
-page_text_items = pages_text.split(/(\\n)|(\n)|[ \t]{2,}/i)
+page_text_items = Array.new()
+
+pages_text.each do |page| 
+  page_text_lines = page.split(/(\\n)|(\n)|[ \t]{2,}/i)
+  page_text_lines.each do |line|
+    page_text_items << line
+  end
+end
 
 puts "Before Reject: #{page_text_items.count} items."
 
