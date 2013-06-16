@@ -6,20 +6,20 @@ require 'pp'
 require_all 'patco-gtfs-fun'
 
 puts "Hello world!"
-page_text = ""
+pages_text = Array.new()
 timetable = Array.new()
 
 File.open("files/timetable.pdf", "rb") do |file|
   reader = PDF::Reader.new(file)
   reader.pages.each do |page|
-    page_text << page.text
+    pages_text << page.text
   end
 end
 
 # Feed our PDF text into an array, delimiting each item any time we 
 # run into newline characters, whether actual new lines or instances of "\n"
 # found in the document.
-page_text_items = page_text.split(/(\\n)|(\n)|[ \t]{2,}/i)
+page_text_items = pages_text.split(/(\\n)|(\n)|[ \t]{2,}/i)
 
 puts "Before Reject: #{page_text_items.count} items."
 
@@ -36,6 +36,7 @@ page_text_items.each do |item|
     timetable << match
   }
 end
+
 # After, we remove empty lines from our array of text items
 page_text_items.delete("")
 
