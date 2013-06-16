@@ -71,7 +71,7 @@ patco_routes = Array.new()
 patco_routes << Route.new([1, "PATCO", "PATCO Speedline", 2])
 
 # Pretty easy to get these.
-patco_stop_names = ["Lindenwold", "Ashland", "Woodcrest", "Haddonfield", "Westmont", "Collingswood", "Ferry Avenue", "Broadway", "City Hall", "8th - Market", "9-10th Locust", "12-13th Locust", "15-16th Locust"]
+patco_stop_names = ["Lindenwold", "Ashland", "Woodcrest", "Haddonfield", "Westmont", "Collingswood", "Ferry Avenue", "Broadway", "City Hall", "8th & Market St.", "9-10th & Locust St.", "12-13th & Locust St.", "15-16th & Locust St."]
 # These were fetched via Google Maps. (http://productforums.google.com/forum/#!topic/maps/NqlDbTLlyjY)
 patco_stop_coords = [[39.833817,-75.000318], [39.858957,-75.009505], [39.87019,-75.011222], [39.897358,-75.036818], [39.906922,-75.046559], [39.913324,-75.064884], [39.92296,-75.091898], [39.942589,-75.119224], [39.945657,-75.12106], [39.951143,-75.153567], [39.947319,-75.157624], [39.947944,-75.162345], [39.948635,-75.167774]]
 patco_stops = Array.new(patco_stop_names.count) { |stop_id| Stop.new([stop_id, patco_stop_names[stop_id], patco_stop_coords[stop_id][0], patco_stop_coords[stop_id][1]]) }
