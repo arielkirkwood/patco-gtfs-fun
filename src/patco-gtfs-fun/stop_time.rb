@@ -1,3 +1,5 @@
+# Stop time class
+# https://developers.google.com/transit/gtfs/reference#stop_times_fields
 class StopTime < CSV::Row
 
   # Function used to instantiate this class.

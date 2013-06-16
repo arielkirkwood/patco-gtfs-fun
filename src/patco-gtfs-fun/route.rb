@@ -1,3 +1,5 @@
+# Route class
+# https://developers.google.com/transit/gtfs/reference#routes_fields
 class Route < CSV::Row
 
   # Function used to instantiate this class.

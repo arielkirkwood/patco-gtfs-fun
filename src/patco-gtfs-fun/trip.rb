@@ -1,3 +1,5 @@
+# Trip class
+# https://developers.google.com/transit/gtfs/reference#trips_fields
 class Trip < CSV::Row
 
   # Function used to instantiate this class.

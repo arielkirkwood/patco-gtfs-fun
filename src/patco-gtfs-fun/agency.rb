@@ -1,3 +1,5 @@
+# Agency class
+# https://developers.google.com/transit/gtfs/reference#agency_fields
 class Agency < CSV::Row
   # attr_accessor :headers, :fields (maybe need this in the future?)
   

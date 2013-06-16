@@ -1,3 +1,5 @@
+# Stop class
+# https://developers.google.com/transit/gtfs/reference#stops_fields
 class Stop < CSV::Row
 
   # Function used to instantiate this class.
