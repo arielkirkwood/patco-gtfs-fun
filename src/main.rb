@@ -39,9 +39,18 @@ page_text_items.each do |item|
   # puts item
   # if 
 
-  # Our massive regex string broken down:
-  # /([XW])?(([01]\d|\d)[:.]([0-5]\d){1,2}) ([AP])|(\u2014\u2014\u003E?)|/
-  
+  # Our massive regex string finds the following matches:
+  # A timestamp, optionally including special PATCO codes ("X" or "W"):
+  # "12:30pm" (matched)
+  # "X7:30am" (matched)
+  # 
+  # An arrow, indicating that a stop gets skipped:
+  # "-->"
+  # 
+  # Empty strings also get matched:
+  # ""
+  # 
+  # Here's how we break it down:
   # The first part looks for (and captures) the presence of an "X" or "W" character before the timestamp.
   # These represent special situations for a PATCO train. (for this version, we are not doing anything about it.)
   # It's optional (due to the "?" afterwards), but if there is one, the parentheses tell our 
