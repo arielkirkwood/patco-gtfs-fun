@@ -92,7 +92,6 @@ page_text_items.each do |item|
   # we include another "or" pipe with nothing on the other side. This lets blank lines through.
   # The final "/" indicates the end of the regex string.
   # |/
-  p item
   item.match(/([XW])?((([01]\d|\d)[:.]([0-5]\d){1,2}) ([AP]))|(\u2014+\u003E?)|/) do |match| 
     timetable_items << match
   end
@@ -113,7 +112,7 @@ patco_agencies << Agency.new(["Port Authority Transit Corporation", "http://www.
 
 # Using a hash instead of an array to store this data before output to CSV,
 # to make the code a bit more understandable
-patco_schedule = Hash.new()
+patco_schedule = Array.new()
 
 # Hard-coding Jan 1 2013 for lack of a better idea of what the start date should be
 patco_schedule_start_date = 20130101
@@ -121,7 +120,7 @@ patco_schedule_start_date = 20130101
 patco_schedule_end_date = 20131231 
 
 # Hard-code separate service calendars for the weekday, Saturday, and Sunday timetables
-patco_schedule["weekday"] = Calendar.new([
+patco_schedule << Calendar.new([
   1, # service_id
   1, # Does this service run on Mondays?
   1, # Does this service run on Tuesdays?
@@ -133,8 +132,8 @@ patco_schedule["weekday"] = Calendar.new([
   patco_schedule_start_date,
   patco_schedule_end_date
 ])
-patco_schedule["saturday"] = Calendar.new([2, 0, 0, 0, 0, 0, 1, 0, patco_schedule_start_date, patco_schedule_end_date])
-patco_schedule["sunday"] = Calendar.new([3, 0, 0, 0, 0, 0, 0, 1, patco_schedule_start_date, patco_schedule_end_date])
+patco_schedule << Calendar.new([2, 0, 0, 0, 0, 0, 1, 0, patco_schedule_start_date, patco_schedule_end_date])
+patco_schedule << Calendar.new([3, 0, 0, 0, 0, 0, 0, 1, patco_schedule_start_date, patco_schedule_end_date])
 
 # Best guess for route_type was 2 - "Rail. Used for intercity or long-distance travel."
 # https://developers.google.com/transit/gtfs/reference#routes_fields
@@ -197,12 +196,16 @@ end
 
 # p timetable[:west][0]
 
-# Output arrays to CSV files
+# Assemble CSV rows into a CSV Table object, then output to CSV files
 patco_agency_csv = CSV::Table.new(patco_agencies)
+File.open("output/agency.txt", "wb") { |file| file.write(patco_agency_csv)  }
 
-# pp patco_agency_csv.to_csv
-File.open("../output/agency.txt", "wb") { |file| file.write(patco_agency_csv)  }
+patco_calendar_csv = CSV::Table.new(patco_schedule)
+File.open("output/calendar.txt", "wb") { |file| file.write(patco_calendar_csv)  }
 
-# CSV.open("../output/agency.txt", "wb") do |csv|
-  
-# end
+patco_routes_csv = CSV::Table.new(patco_routes)
+File.open("output/routes.txt", "wb") { |file| file.write(patco_routes_csv)  }
+
+patco_stops_csv = CSV::Table.new(patco_stops)
+File.open("output/stops.txt", "wb") { |file| file.write(patco_stops_csv)  }
+
