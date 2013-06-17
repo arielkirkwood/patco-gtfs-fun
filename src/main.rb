@@ -28,29 +28,61 @@ pages_text.each do |page|
   end
 end
 
-puts "Before Reject: #{page_text_items.count} items."
 
 # Remove empty array items.
 page_text_items = page_text_items.reject! { |item| item.empty? }
 
-puts "After Reject: #{page_text_items.count} items."
 
-# clean up whitespace (regex: /X?((20|21|22|23|[01]\d|\d)(([:.][0-5]\d){1,2}) [AP])|(——>)|(——)/)
+# clean up whitespace and collect timetable items into an array
 page_text_items.each do |item|
   item.strip!
   # puts item
-  item.match(/X?((20|21|22|23|[01]\d|\d)(([:.][0-5]\d){1,2}) [AP])/) { |match| 
+  # if 
+
+  # Our massive regex string broken down:
+  # /([XW])?(([01]\d|\d)[:.]([0-5]\d){1,2}) ([AP])|(\u2014\u2014\u003E?)|/
+  
+  # The first part looks for (and captures) the presence of an "X" or "W" character before the timestamp.
+  # These represent special situations for a PATCO train. (for this version, we are not doing anything about it.)
+  # It's optional (due to the "?" afterwards), but if there is one, the parentheses tell our 
+  # match() function to make that character available in a portion of the result.
+  # /([XW])? 
+  # 
+  # Next, we capture the timestamp itself.
+  # The first part is looking for a number starting with a 0 or 1, and ending in any digit.
+  # This way, we can catch 1, 2, 3, up to 12 (though it will capture numbers up to 19).
+  # (([01]\d|\d)
+  # 
+  # Then, we look for the colon:
+  # [:]
+  # 
+  # Now, the minutes. 
+  # ([0-5]\d) <-- a number from 0-5 succeeded by any digit
+  # 
+  # This last part simply says that the result of the minutes may be 1 or 2 characters long.
+  # {1,2}) 
+  # 
+  # Next, we get the "AM" or "PM" portion of the timestamp.
+  #  ([AP]) <-- note the extra space character before the parentheses, it's important!
+  # 
+  # Sometimes, instead of a timestamp, we get an arrow (-->) representing that the stop gets skipped on this trip.
+  # Since the characters include unicode em-dashes, the \u signals the regex to look for a unicode character
+  # at location # 2014. For fun, I decided to include the unicode reference for ">" as well. (# 003E)
+  # | <-- the pipe signifies an "or" case; we might get a timestamp, OR an arrow.
+  # (\u2014\u2014\u003E?)
+  # 
+  # To be more able to distinguish where the timetable switches to the other direction
+  # (switching from the 13 "Westbound to Philadelphia" timestamps to the "Eastbound to Lindenwold" ones),
+  # we include another "or" pipe with nothing on the other side. This lets blank lines through.
+  # The final "/" indicates the end of the regex string.
+  # |/
+  item.match(/([XW])?(([01]\d|\d)[:.]([0-5]\d){1,2}) ([AP])|(\u2014\u2014\u003E?)|/) do |match| 
     timetable << match
-  }
+  end
 end
 
-# After, we remove empty lines from our array of text items
-page_text_items.delete("")
+pp timetable
 
-puts "After Delete: #{page_text_items.count} items."
-
-puts "#{timetable.count} timetable items"
-puts "#{page_text_items.count} text items"
 
 # Start putting together hard-coded data
 
