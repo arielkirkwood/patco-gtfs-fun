@@ -2,12 +2,12 @@ require 'csv'
 require 'pdf-reader'
 require 'require_all'
 require 'pp'
+require 'time'
 
 require_all 'patco-gtfs-fun'
 
 puts "Hello world!"
 pages_text = Array.new()
-timetable = Array.new()
 
 File.open("files/timetable.pdf", "rb") do |file|
   reader = PDF::Reader.new(file)
@@ -28,16 +28,17 @@ pages_text.each do |page|
   end
 end
 
-
 # Remove empty array items.
 page_text_items = page_text_items.reject! { |item| item.empty? }
 
+# First, we need a place to put our timetable-related items:
+timetable_items = Array.new()
 
 # clean up whitespace and collect timetable items into an array
 page_text_items.each do |item|
+  # Strip leading and trailing whitespace from the line
   item.strip!
-  # puts item
-  # if 
+  # p item
 
   # Our massive regex string finds the following matches:
   # A timestamp, optionally including special PATCO codes ("X" or "W"):
@@ -56,6 +57,8 @@ page_text_items.each do |item|
   # It's optional (due to the "?" afterwards), but if there is one, the parentheses tell our 
   # match() function to make that character available in a portion of the result.
   # /([XW])? 
+  # ** This part is not included in the current version of the regex because there was not enough time 
+  # ** to write code tohandle these kinds of cases.
   # 
   # Next, we capture the timestamp itself.
   # The first part is looking for a number starting with a 0 or 1, and ending in any digit.
@@ -72,25 +75,28 @@ page_text_items.each do |item|
   # {1,2}) 
   # 
   # Next, we get the "AM" or "PM" portion of the timestamp.
-  #  ([AP]) <-- note the extra space character before the parentheses, it's important!
+  #  ([AP])) <-- note the extra space character before the parentheses, it's important!
+  # The second right parenthesis closes a capture block that captures the whole timestamp.
   # 
-  # Sometimes, instead of a timestamp, we get an arrow (-->) representing that the stop gets skipped on this trip.
-  # Since the characters include unicode em-dashes, the \u signals the regex to look for a unicode character
-  # at location # 2014. For fun, I decided to include the unicode reference for ">" as well. (# 003E)
+  # Sometimes, instead of a timestamp, we get an arrow (-->) with varying numbers of dashes representing that
+  # the stop gets skipped on this trip. Since the characters include unicode em-dashes, the \u signals 
+  # the regex to look for a unicode character at location # 2014. The "+" indicates that there may be more
+  # than one dash.
+  # For fun, I decided to include the unicode reference for ">" as well. (# 003E)
+  # 
   # | <-- the pipe signifies an "or" case; we might get a timestamp, OR an arrow.
-  # (\u2014\u2014\u003E?)
+  # (\u2014+\u003E?)
   # 
   # To be more able to distinguish where the timetable switches to the other direction
   # (switching from the 13 "Westbound to Philadelphia" timestamps to the "Eastbound to Lindenwold" ones),
   # we include another "or" pipe with nothing on the other side. This lets blank lines through.
   # The final "/" indicates the end of the regex string.
   # |/
-  item.match(/([XW])?(([01]\d|\d)[:.]([0-5]\d){1,2}) ([AP])|(\u2014\u2014\u003E?)|/) do |match| 
-    timetable << match
+  p item
+  item.match(/([XW])?((([01]\d|\d)[:.]([0-5]\d){1,2}) ([AP]))|(\u2014+\u003E?)|/) do |match| 
+    timetable_items << match
   end
 end
-
-pp timetable
 
 
 # Start putting together hard-coded data
@@ -156,4 +162,47 @@ patco_stops = Array.new(patco_stop_names.count) do |stop_id| # iterate through t
   ])
 end
 
-# More to come...
+# WIP: timetable processing and Trip/StopTime object assembly
+
+# Will be our final timetable element
+timetable = Hash.new()
+
+# Westbound to Philadelphia
+timetable[:west] = Array.new(13) { Array.new }
+
+# Eastbound to Lindenwold
+timetable[:east] = Array.new(13) { Array.new }
+
+# Starting loop values
+timestamp_counter = 0
+direction = :west
+
+timetable_items.each do |time|
+  # p timestamp_counter
+  
+  if timestamp_counter == 13 and direction == :west
+    direction = :east
+    timestamp_counter = 0
+  elsif timestamp_counter == 13 and direction == :east
+    direction = :west
+    timestamp_counter = 0
+  end
+
+  unless time[2].nil? # if time item has no data, don't process it
+    timetable[direction][timestamp_counter] << time[2]
+    timestamp_counter += 1
+  else
+  end
+end
+
+# p timetable[:west][0]
+
+# Output arrays to CSV files
+patco_agency_csv = CSV::Table.new(patco_agencies)
+
+# pp patco_agency_csv.to_csv
+File.open("../output/agency.txt", "wb") { |file| file.write(patco_agency_csv)  }
+
+# CSV.open("../output/agency.txt", "wb") do |csv|
+  
+# end
